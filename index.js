@@ -5,7 +5,12 @@ import {
   GraphQLObjectType,
   GraphQLInterfaceType,
   GraphQLNonNull,
-  GraphQLList
+  GraphQLList,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLBoolean,
+  GraphQLFloat,
+  GraphQLID
 } from 'graphql';
 
 import { parse, visit } from 'graphql/language';
@@ -19,8 +24,17 @@ function getType(type) {
       return t.newExpression(t.identifier(GraphQLNonNull.name), [getType(type.type)]);
     case kinds.LIST_TYPE:
       return t.newExpression(t.identifier(GraphQLList.name), [getType(type.type)]);
+    case kinds.NAMED_TYPE:
+      switch(type.name.value) {
+        case GraphQLString.name:
+        case GraphQLInt.name:
+        case GraphQLFloat.name:
+        case GraphQLBoolean.name:
+        case GraphQLID.name:
+          return t.identifier(`GraphQL${type.name.value}`);
+      }
     default:
-      return t.identifier(`GraphQL${type.name.value}`);
+      return t.callExpression(t.memberExpression(t.thisExpression(), t.identifier(type.name.value)), []);
   }
 }
 
@@ -30,13 +44,16 @@ function graphQLEnumTypeDefinition(node) {
     return t.objectProperty(t.identifier(v.name.value), t.objectExpression([]));
   });
 
-  return t.objectProperty(t.identifier(typeName), t.newExpression(
-      t.identifier(GraphQLEnumType.name),
-      [t.objectExpression([
-        t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
-        t.objectProperty(t.identifier('values'), t.objectExpression(values))
-      ])]
-     ));
+  return t.objectProperty(t.identifier(typeName),
+    t.functionExpression(null, [], t.blockStatement(
+      [t.returnStatement(
+        t.newExpression(
+          t.identifier(GraphQLEnumType.name),
+          [t.objectExpression([
+            t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
+            t.objectProperty(t.identifier('values'), t.objectExpression(values))
+          ])]
+    ))])));
 }
 
 function graphQLTypeDefinition(name, node) {
@@ -50,13 +67,19 @@ function graphQLTypeDefinition(name, node) {
     ]))
   });
 
-  return t.objectProperty(t.identifier(typeName), t.newExpression(
-      t.identifier(name),
-      [t.objectExpression([
-        t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
-        t.objectProperty(t.identifier('fields'), t.arrowFunctionExpression([],
-          t.objectExpression(fields)
-        ))])]));
+  return t.objectProperty(t.identifier(typeName),
+    t.functionExpression(null, [], t.blockStatement(
+      [t.returnStatement(
+        t.newExpression(
+          t.identifier(name),
+          [t.objectExpression([
+          t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
+          t.objectProperty(t.identifier('fields'), t.arrowFunctionExpression([],
+            t.objectExpression(fields)
+          ))])])
+      )]
+    ))
+  );
 }
 
 export default function() {

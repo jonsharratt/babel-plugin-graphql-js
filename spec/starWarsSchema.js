@@ -10,6 +10,7 @@ interface Character {
 type Human implements Character {
   id: String!
   name: String
+  friends: [Character]
   homePlanet: String
 }
 
