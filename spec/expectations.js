@@ -82,6 +82,18 @@ export const Enum =
   })
 }`
 
+export const Lists =
+`{
+  Hello: new GraphQLObjectType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: new GraphQLList(GraphQLString)
+      }
+    })
+  })
+}`
+
 export const Example =
 `{
   Customer: new GraphQLObjectType({

@@ -1,19 +1,36 @@
 import * as t from 'babel-types';
+
+import {
+  GraphQLEnumType,
+  GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLList
+} from 'graphql';
+
 import { parse, visit } from 'graphql/language';
 import * as kinds from 'graphql/language/kinds';
 
 const SCHEMA_TAG = 'graphql';
 
+function getType(type) {
+  switch(type.kind) {
+    case kinds.NON_NULL_TYPE:
+      return t.newExpression(t.identifier(GraphQLNonNull.name), [getType(type.type)]);
+    case kinds.LIST_TYPE:
+      return t.newExpression(t.identifier(GraphQLList.name), [getType(type.type)]);
+    default:
+      return t.identifier(`GraphQL${type.name.value}`);
+  }
+}
+
 function buildGraphQLEnumType(node) {
   const typeName = node.name.value;
   const values = node.values.map(v => {
-    return t.objectProperty(
-      t.identifier(v.name.value),
-      t.objectExpression([]))
+    return t.objectProperty(t.identifier(v.name.value), t.objectExpression([]));
   });
 
   return t.objectProperty(t.identifier(typeName), t.newExpression(
-      t.identifier('GraphQLEnumType'),
+      t.identifier(GraphQLEnumType.name),
       [t.objectExpression([
         t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
         t.objectProperty(t.identifier('values'), t.objectExpression(values))
@@ -24,27 +41,16 @@ function buildGraphQLEnumType(node) {
 function buildGraphQLObjectType(node) {
   const typeName = node.name.value;
   const fields = node.fields.map(f => {
-    let type;
-    switch(f.type.kind) {
-      case 'NonNullType':
-        type = t.newExpression(
-          t.identifier('GraphQLNonNull'), [t.identifier(`GraphQL${f.type.type.name.value}`)]);
-        break;
-      default:
-        type = t.identifier(`GraphQL${f.type.name.value}`);
-        break;
-    }
 
-    return t.objectProperty(
-      t.identifier(f.name.value),
-      t.objectExpression([
-        t.objectProperty(t.identifier('type'),
-        type)
-      ]))
+  return t.objectProperty(
+    t.identifier(f.name.value),
+    t.objectExpression([
+      t.objectProperty(t.identifier('type'), getType(f.type))
+    ]))
   });
 
   return t.objectProperty(t.identifier(typeName), t.newExpression(
-      t.identifier('GraphQLObjectType'),
+      t.identifier(GraphQLObjectType.name),
       [t.objectExpression([
         t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
         t.objectProperty(t.identifier('fields'), t.arrowFunctionExpression([],
@@ -65,10 +71,10 @@ export default function() {
             visit(ast, {
               enter(node) {
                 switch(node.kind) {
-                  case 'ObjectTypeDefinition':
+                  case kinds.OBJECT_TYPE_DEFINITION:
                     result.push(buildGraphQLObjectType(node));
                     break;
-                  case 'EnumTypeDefinition':
+                  case kinds.ENUM_TYPE_DEFINITION:
                     result.push(buildGraphQLEnumType(node));
                     break;
                 }

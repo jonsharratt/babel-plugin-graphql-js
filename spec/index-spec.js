@@ -27,6 +27,11 @@ describe('Schema', () => {
     expect(transform(code)).to.equal(`${expectations.Enum}`);
   });
 
+  it('Lists', () => {
+    const code = 'graphql`type Hello { world: [String] }`'
+    expect(transform(code)).to.equal(`${expectations.Lists}`);
+  });
+
   describe('Types', () => {
     it('String', () => {
       const code = 'graphql`type Hello { world: String }`'
