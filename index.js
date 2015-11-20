@@ -2,7 +2,7 @@ import * as t from 'babel-types';
 import { parse, visit } from 'graphql/language';
 import * as kinds from 'graphql/language/kinds';
 
-const SCHEMA_TAG = 'Schema';
+const SCHEMA_TAG = 'graphql';
 
 function buildGraphQLEnumType(node) {
   const typeName = node.name.value;
@@ -12,15 +12,13 @@ function buildGraphQLEnumType(node) {
       t.objectExpression([]))
   });
 
-  return t.variableDeclaration('const', [t.variableDeclarator(t.identifier(`${typeName}Enum`),
-    t.newExpression(
+  return t.objectProperty(t.identifier(typeName), t.newExpression(
       t.identifier('GraphQLEnumType'),
       [t.objectExpression([
         t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
         t.objectProperty(t.identifier('values'), t.objectExpression(values))
       ])]
-     )
-  )]);
+     ));
 }
 
 function buildGraphQLObjectType(node) {
@@ -45,17 +43,13 @@ function buildGraphQLObjectType(node) {
       ]))
   });
 
-  return t.variableDeclaration('const', [t.variableDeclarator(t.identifier(`${typeName}Type`),
-    t.newExpression(
+  return t.objectProperty(t.identifier(typeName), t.newExpression(
       t.identifier('GraphQLObjectType'),
       [t.objectExpression([
         t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
         t.objectProperty(t.identifier('fields'), t.arrowFunctionExpression([],
           t.objectExpression(fields)
-        ))
-      ])]
-     )
-  )]);
+        ))])]));
 }
 
 export default function() {
@@ -80,7 +74,7 @@ export default function() {
                 }
               }
             });
-            path.parentPath.replaceWithMultiple(result);
+            path.parentPath.replaceWithMultiple(t.objectExpression(result));
           }
         }
       }
