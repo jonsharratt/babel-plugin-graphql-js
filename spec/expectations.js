@@ -122,6 +122,17 @@ export const StarWars =
       JEDI: {}
     }
   }),
+  Character: new GraphQLInterfaceType({
+    name: "Character",
+    fields: () => ({
+      id: {
+        type: new GraphQLNonNull(GraphQLString)
+      },
+      name: {
+        type: GraphQLString
+      }
+    })
+  }),
   Human: new GraphQLObjectType({
     name: "Human",
     fields: () => ({

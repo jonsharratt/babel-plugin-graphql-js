@@ -3,6 +3,7 @@ import * as t from 'babel-types';
 import {
   GraphQLEnumType,
   GraphQLObjectType,
+  GraphQLInterfaceType,
   GraphQLNonNull,
   GraphQLList
 } from 'graphql';
@@ -23,7 +24,7 @@ function getType(type) {
   }
 }
 
-function buildGraphQLEnumType(node) {
+function graphQLEnumTypeDefinition(node) {
   const typeName = node.name.value;
   const values = node.values.map(v => {
     return t.objectProperty(t.identifier(v.name.value), t.objectExpression([]));
@@ -38,7 +39,7 @@ function buildGraphQLEnumType(node) {
      ));
 }
 
-function buildGraphQLObjectType(node) {
+function graphQLTypeDefinition(name, node) {
   const typeName = node.name.value;
   const fields = node.fields.map(f => {
 
@@ -50,7 +51,7 @@ function buildGraphQLObjectType(node) {
   });
 
   return t.objectProperty(t.identifier(typeName), t.newExpression(
-      t.identifier(GraphQLObjectType.name),
+      t.identifier(name),
       [t.objectExpression([
         t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
         t.objectProperty(t.identifier('fields'), t.arrowFunctionExpression([],
@@ -72,10 +73,13 @@ export default function() {
               enter(node) {
                 switch(node.kind) {
                   case kinds.OBJECT_TYPE_DEFINITION:
-                    result.push(buildGraphQLObjectType(node));
+                    result.push(graphQLTypeDefinition(GraphQLObjectType.name, node));
+                    break;
+                  case kinds.INTERFACE_TYPE_DEFINITION:
+                    result.push(graphQLTypeDefinition(GraphQLInterfaceType.name, node));
                     break;
                   case kinds.ENUM_TYPE_DEFINITION:
-                    result.push(buildGraphQLEnumType(node));
+                    result.push(graphQLEnumTypeDefinition(node));
                     break;
                 }
               }
