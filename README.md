@@ -1,1 +1,1 @@
-GraphQL Schema to GraphQLJS Plugin
+## GraphQL Schema to GraphQL.js Plugin
