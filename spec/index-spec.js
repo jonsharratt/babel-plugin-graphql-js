@@ -1,8 +1,6 @@
 import { expect } from "chai";
 import * as expectations from "./expectations";
 
-import { Schema  } from "../";
-
 const transform = (str) => {
   return require("babel-core").transform(str, {
     plugins: [".."],
@@ -11,9 +9,9 @@ const transform = (str) => {
 
 describe('Schema', () => {
   describe('Directives', () => {
-    it('Nullable', () => {
+    it('NonNull', () => {
       const code = 'Schema`type Hello { world: String! }`'
-      expect(transform(code)).to.equal(`${expectations.NullableDirective}`);
+      expect(transform(code)).to.equal(`${expectations.NonNullDirective}`);
     });
   });
 

@@ -1,4 +1,4 @@
-export const NullableDirective =
+export const NonNullDirective =
 `const HelloType = new GraphQLObjectType({
   name: "Hello",
   fields: () => ({
