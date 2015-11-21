@@ -2,9 +2,11 @@
   "name": "babel-graphql-js",
   "version": "0.0.1",
   "description": "GraphQL Schema to GraphQL.js Babel Plugin",
-  "main": "index.js",
+  "main": "lib",
   "scripts": {
-    "test": "mocha --harmony --compilers js:babel-core/register spec"
+    "test": "mocha --harmony --compilers js:babel-core/register spec",
+    "clean": "rimraf lib",
+    "build": "babel src -d lib"
   },
   "author": "Jon Sharratt",
   "dependencies": {
