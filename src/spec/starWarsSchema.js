@@ -24,3 +24,13 @@ type Droid implements Character {
   appearsIn: [Episode]
   primaryFunction: String
 }`
+
+export const fields = `
+{
+  Droid: {
+    friends: {
+      resolve: droid => getFriends(droid),
+    }
+  }
+}
+`;

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as expectations from "./expectations";
 
-import { schema } from "./starWarsSchema";
+import { schema, fields } from "./starWarsSchema";
 
 const transform = (str) => {
   return require("babel-core").transform(str, {
@@ -12,7 +12,15 @@ const transform = (str) => {
 describe('Schema', () => {
   it('StarWars', () => {
     const code = schema;
-    expect(transform('graphql`${`' + code + '`}`')).to.equal(`${expectations.StarWars}`);
+    expect(transform('graphql`${`' + code + '`}${' + fields +'}`')).to.equal(`${expectations.StarWars}`);
+  });
+
+  describe('Resolvers', () => {
+    it('Field', () => {
+      const code = 'graphql`${ `type Hello { world: String }`}' +
+                           '${ { Hello: { world: { resolve: () => { return "foo"; } } } } }`'
+      expect(transform(code)).to.equal(`${expectations.FieldResolver}`);
+    });
   });
 
   describe('Directives', () => {
