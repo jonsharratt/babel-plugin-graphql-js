@@ -1,13 +1,12 @@
 {
-  "name": "babel-graphqljs",
+  "name": "babel-graphql-js",
   "version": "0.0.1",
-  "description": "GraphQL Schema transpiler to GraphQL.js",
+  "description": "GraphQL Schema to GraphQL.js Babel Plugin",
   "main": "index.js",
   "scripts": {
     "test": "mocha --harmony --compilers js:babel-core/register spec"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Jon Sharratt",
   "dependencies": {
     "babel-core": "^6.1.21",
     "babel-preset-es2015": "^6.1.18",
