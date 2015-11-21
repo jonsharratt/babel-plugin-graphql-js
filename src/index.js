@@ -112,7 +112,8 @@ export default function() {
         enter: function(path) {
           if (path.node.tag.name === SCHEMA_TAG) {
             const result = [];
-            const schema = path.node.quasi.quasis[0].value.raw;
+            const schema = path.node.quasi.expressions[0].quasis[0].value.raw;
+
             const ast = parse(schema);
 
             visit(ast, {

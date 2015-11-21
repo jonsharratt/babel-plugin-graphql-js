@@ -4,7 +4,7 @@
   "description": "GraphQL Schema to GraphQL.js Babel Plugin",
   "main": "lib",
   "scripts": {
-    "test": "mocha --harmony --compilers js:babel-core/register spec",
+    "test": "mocha --harmony --compilers js:babel-core/register src/spec",
     "clean": "rimraf lib",
     "build": "babel src -d lib",
     "prepublish": "npm run build"
