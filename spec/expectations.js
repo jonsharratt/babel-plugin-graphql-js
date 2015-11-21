@@ -131,6 +131,12 @@ export const StarWars =
         },
         name: {
           type: GraphQLString
+        },
+        friends: {
+          type: new GraphQLList(this.Character())
+        },
+        appearsIn: {
+          type: new GraphQLList(this.Episode())
         }
       })
     });
@@ -148,6 +154,9 @@ export const StarWars =
         friends: {
           type: new GraphQLList(this.Character())
         },
+        appearsIn: {
+          type: new GraphQLList(this.Episode())
+        },
         homePlanet: {
           type: GraphQLString
         }
@@ -163,6 +172,12 @@ export const StarWars =
         },
         name: {
           type: GraphQLString
+        },
+        friends: {
+          type: new GraphQLList(this.Character())
+        },
+        appearsIn: {
+          type: new GraphQLList(this.Episode())
         },
         primaryFunction: {
           type: GraphQLString
