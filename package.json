@@ -1,6 +1,6 @@
 {
   "name": "babel-graphql-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "GraphQL Schema to GraphQL.js Babel Plugin",
   "main": "lib",
   "scripts": {
