@@ -34,49 +34,72 @@ function getType(type) {
           return t.identifier(`GraphQL${type.name.value}`);
       }
     default:
-      return t.callExpression(t.memberExpression(t.thisExpression(), t.identifier(type.name.value)), []);
+      return t.callExpression(t.memberExpression(t.thisExpression(),
+             t.identifier(type.name.value)), []);
   }
 }
 
-function graphQLEnumTypeDefinition(node) {
-  const typeName = node.name.value;
+function getInterfaces(node) {
+  const interfaces = t.arrayExpression(
+    node.interfaces.map(iface => { return getType(iface); })
+  );
+
+  return t.objectProperty(t.identifier('interfaces'), interfaces);
+}
+
+function getFields(node) {
+  const fields = node.fields.map(f => {
+    return t.objectProperty(
+      t.identifier(f.name.value),
+      t.objectExpression([
+        t.objectProperty(t.identifier('type'), getType(f.type))
+      ]))
+  });
+
+  return t.objectProperty(t.identifier('fields'),
+         t.arrowFunctionExpression([], t.objectExpression(fields)));
+}
+
+function getValues(node) {
   const values = node.values.map(v => {
     return t.objectProperty(t.identifier(v.name.value), t.objectExpression([]));
   });
 
-  return t.objectProperty(t.identifier(typeName),
-    t.functionExpression(null, [], t.blockStatement(
-      [t.returnStatement(
-        t.newExpression(
-          t.identifier(GraphQLEnumType.name),
-          [t.objectExpression([
-            t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
-            t.objectProperty(t.identifier('values'), t.objectExpression(values))
-          ])]
-    ))])));
+  return t.objectProperty(t.identifier('values'), t.objectExpression(values))
 }
 
-function graphQLTypeDefinition(name, node) {
-  const typeName = node.name.value;
-  const fields = node.fields.map(f => {
+function getName(node) {
+  return t.objectProperty(t.identifier('name'),
+         t.stringLiteral(node.name.value));
+}
 
-  return t.objectProperty(
-    t.identifier(f.name.value),
-    t.objectExpression([
-      t.objectProperty(t.identifier('type'), getType(f.type))
-    ]))
-  });
+function getTypeDefintionBody(node) {
+  const body = [];
+
+  body.push(getName(node));
+
+  if (node.fields && node.fields.length) {
+    body.push(getFields(node));
+  }
+
+  if (node.values && node.values.length) {
+    body.push(getValues(node));
+  }
+
+  if (node.interfaces && node.interfaces.length) {
+    body.push(getInterfaces(node));
+  }
+
+  return [t.objectExpression(body)]
+}
+
+function graphQLTypeDefinition(graphQLType, node) {
+  const typeName = node.name.value;
 
   return t.objectProperty(t.identifier(typeName),
     t.functionExpression(null, [], t.blockStatement(
       [t.returnStatement(
-        t.newExpression(
-          t.identifier(name),
-          [t.objectExpression([
-          t.objectProperty(t.identifier('name'), t.stringLiteral(typeName)),
-          t.objectProperty(t.identifier('fields'), t.arrowFunctionExpression([],
-            t.objectExpression(fields)
-          ))])])
+        t.newExpression(t.identifier(graphQLType), getTypeDefintionBody(node))
       )]
     ))
   );
@@ -98,11 +121,11 @@ export default function() {
                   case kinds.OBJECT_TYPE_DEFINITION:
                     result.push(graphQLTypeDefinition(GraphQLObjectType.name, node));
                     break;
+                  case kinds.ENUM_TYPE_DEFINITION:
+                    result.push(graphQLTypeDefinition(GraphQLEnumType.name, node));
+                    break;
                   case kinds.INTERFACE_TYPE_DEFINITION:
                     result.push(graphQLTypeDefinition(GraphQLInterfaceType.name, node));
-                    break;
-                  case kinds.ENUM_TYPE_DEFINITION:
-                    result.push(graphQLEnumTypeDefinition(node));
                     break;
                 }
               }

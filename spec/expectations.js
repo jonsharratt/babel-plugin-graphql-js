@@ -12,6 +12,26 @@ export const NonNullDirective =
   }
 }`
 
+export const MultipleInterfaces =
+`{
+  Hello: function () {
+    return new GraphQLObjectType({
+      name: "Hello",
+      interfaces: [this.World(), this.Universe()]
+    });
+  }
+}`
+
+export const SingleInterface =
+`{
+  Hello: function () {
+    return new GraphQLObjectType({
+      name: "Hello",
+      interfaces: [this.World()]
+    });
+  }
+}`
+
 export const StringType =
 `{
   Hello: function () {
@@ -160,7 +180,8 @@ export const StarWars =
         homePlanet: {
           type: GraphQLString
         }
-      })
+      }),
+      interfaces: [this.Character()]
     });
   },
   Droid: function () {
@@ -182,7 +203,8 @@ export const StarWars =
         primaryFunction: {
           type: GraphQLString
         }
-      })
+      }),
+      interfaces: [this.Character()]
     });
   }
 }`

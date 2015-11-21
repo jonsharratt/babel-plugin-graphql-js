@@ -22,6 +22,18 @@ describe('Schema', () => {
     });
   });
 
+  describe('Interfaces', () => {
+    it('Single', () => {
+      const code = 'graphql`type Hello implements World { }`'
+      expect(transform(code)).to.equal(`${expectations.SingleInterface}`);
+    });
+
+    it('Multiple', () => {
+      const code = 'graphql`type Hello implements World, Universe { }`'
+      expect(transform(code)).to.equal(`${expectations.MultipleInterfaces}`);
+    });
+  });
+
   it('Enum', () => {
     const code = 'graphql`enum Hello { WORLD, STAR, UNIVERSE }`'
     expect(transform(code)).to.equal(`${expectations.Enum}`);
