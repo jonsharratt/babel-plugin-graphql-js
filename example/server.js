@@ -34,52 +34,55 @@ type Droid implements Character {
   friends: [Character]
   appearsIn: [Episode]
   primaryFunction: String
-}`}${
+}
+`}${
 {
-  Droid: {
-    friends: {
-      resolve: droid => getFriends(droid),
+  Character: {
+    description: 'A character in the Star Wars Trilogy',
+    resolveType: () => { return StarWarsSchema.Human; },
+    id: {
+      description: 'The id of the character.'
     }
+  },
+  Droid: {
+    description: 'A mechanical creature in the Star Wars universe.'
   }
-}}`;
+}
+}`;
 
 var queryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
     hero: {
-      type: StarWarsTypes.Character(),
+      type: StarWarsTypes.Character,
       args: {
         episode: {
           description: 'If omitted, returns the hero of the whole saga. If ' +
                        'provided, returns the hero of that particular episode.',
           type: StarWarsTypes.Episode
         }
-      },
-      resolve: (root, { episode }) => getHero(episode),
+      }
     },
     human: {
-      type: StarWarsTypes.Human(),
+      type: StarWarsTypes.Human,
       args: {
         id: {
           description: 'id of the human',
           type: new GraphQLNonNull(GraphQLString)
         }
-      },
-      resolve: (root, { id }) => getHuman(id),
+      }
     },
     droid: {
-      type: StarWarsTypes.Droid(),
+      type: StarWarsTypes.Droid,
       args: {
         id: {
           description: 'id of the droid',
           type: new GraphQLNonNull(GraphQLString)
         }
-      },
-      resolve: (root, { id }) => getDroid(id),
+      }
     },
   })
 });
-
 export var StarWarsSchema = new GraphQLSchema({
   query: queryType
 });
