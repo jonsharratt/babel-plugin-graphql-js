@@ -38,13 +38,11 @@ function getType(type) {
     case GraphQLID.name:
       return t.identifier(`GraphQL${type.name.value}`);
     default:
-      return t.callExpression(t.memberExpression(t.thisExpression(),
-             t.identifier(type.name.value)), []);
+      return t.identifier(type.name.value);
     }
     break;
   default:
-    return t.callExpression(t.memberExpression(t.thisExpression(),
-           t.identifier(type.name.value)), []);
+    return t.identifier(type.name.value);
   }
 }
 
@@ -134,14 +132,9 @@ function getBody(node, decorators) {
 }
 
 function typeDefinition(graphQLType, node, decorators) {
-  const typeName = node.name.value;
-  return t.objectProperty(t.identifier(typeName),
-    t.functionExpression(null, [], t.blockStatement(
-      [t.returnStatement(
-        t.newExpression(t.identifier(graphQLType.name), getBody(node, decorators))
-      )]
-    ))
-  );
+  return t.variableDeclaration('const',
+         [t.variableDeclarator(t.identifier(`${node.name.value}`),
+          t.newExpression(t.identifier(graphQLType.name), getBody(node, decorators)))]);
 }
 
 export default function() {
@@ -151,6 +144,7 @@ export default function() {
         enter: function(path) {
           if (path.node.tag.name === SCHEMA_TAG) {
             const root = [];
+            const exports = [];
 
             const schema = path.node.quasi.expressions[0].quasis[0].value.raw;
             const decorator = path.node.quasi.expressions[1];
@@ -163,17 +157,26 @@ export default function() {
                 case kinds.ENUM_TYPE_DEFINITION:
                 case kinds.INTERFACE_TYPE_DEFINITION:
                   let decorators = getDecorator(node, decorator);
+                  exports.push(t.objectProperty(t.identifier(node.name.value), t.identifier(node.name.value)));
                   root.push(typeDefinition(KINDS_MAPPING[node.kind], node, decorators));
                   break;
                 }
               }
             });
-            path.replaceWithMultiple(t.objectExpression(root));
+
+            root.push(getExports(exports));
+            path.replaceWithMultiple(t.callExpression(
+              t.functionExpression(null, [], t.blockStatement(root)),
+            []));
           }
         }
       }
     }
   };
+}
+
+function getExports(exports) {
+  return t.returnStatement(t.objectExpression(exports));
 }
 
 function getDecorator(node, all) {
