@@ -17,6 +17,11 @@ import { parse, visit } from 'graphql/language';
 import * as kinds from 'graphql/language/kinds';
 
 const SCHEMA_TAG = 'graphql';
+const KINDS_MAPPING = {
+  [kinds.OBJECT_TYPE_DEFINITION]: GraphQLObjectType,
+  [kinds.INTERFACE_TYPE_DEFINITION]: GraphQLInterfaceType,
+  [kinds.ENUM_TYPE_DEFINITION]: GraphQLEnumType
+};
 
 function getType(type) {
   switch(type.kind) {
@@ -47,13 +52,32 @@ function getInterfaces(node) {
   return t.objectProperty(t.identifier('interfaces'), interfaces);
 }
 
-function getFields(node) {
+function getFieldDecorators(name, decorators) {
+  const fieldDecorator = decorators.filter(p => {
+    return p.key.name === name;
+  })[0];
+
+  if (fieldDecorator) {
+    return fieldDecorator.value.properties;
+  }
+}
+
+function getFields(node, decorators) {
   const fields = node.fields.map(f => {
+    let fieldProperties = [
+      t.objectProperty(t.identifier('type'), getType(f.type))
+    ];
+
+    if (decorators) {
+      const fieldDecorators = getFieldDecorators(f.name.value, decorators);
+      if (fieldDecorators) {
+        fieldProperties = fieldProperties.concat(fieldDecorators);
+      }
+    }
+
     return t.objectProperty(
       t.identifier(f.name.value),
-      t.objectExpression([
-        t.objectProperty(t.identifier('type'), getType(f.type))
-      ]))
+      t.objectExpression(fieldProperties))
   });
 
   return t.objectProperty(t.identifier('fields'),
@@ -73,13 +97,12 @@ function getName(node) {
          t.stringLiteral(node.name.value));
 }
 
-function getTypeDefintionBody(node) {
+function getBody(node, decorators) {
   const body = [];
-
   body.push(getName(node));
 
   if (node.fields && node.fields.length) {
-    body.push(getFields(node));
+    body.push(getFields(node, decorators));
   }
 
   if (node.values && node.values.length) {
@@ -93,13 +116,13 @@ function getTypeDefintionBody(node) {
   return [t.objectExpression(body)]
 }
 
-function graphQLTypeDefinition(graphQLType, node) {
+function typeDefinition(graphQLType, node, decorators) {
   const typeName = node.name.value;
 
   return t.objectProperty(t.identifier(typeName),
     t.functionExpression(null, [], t.blockStatement(
       [t.returnStatement(
-        t.newExpression(t.identifier(graphQLType), getTypeDefintionBody(node))
+        t.newExpression(t.identifier(graphQLType.name), getBody(node, decorators))
       )]
     ))
   );
@@ -111,31 +134,36 @@ export default function() {
       TaggedTemplateExpression: {
         enter: function(path) {
           if (path.node.tag.name === SCHEMA_TAG) {
-            const result = [];
-            const schema = path.node.quasi.expressions[0].quasis[0].value.raw;
+            const root = [];
 
+            const schema = path.node.quasi.expressions[0].quasis[0].value.raw;
+            const decorator = path.node.quasi.expressions[1];
             const ast = parse(schema);
 
             visit(ast, {
               enter(node) {
                 switch(node.kind) {
                   case kinds.OBJECT_TYPE_DEFINITION:
-                    result.push(graphQLTypeDefinition(GraphQLObjectType.name, node));
-                    break;
                   case kinds.ENUM_TYPE_DEFINITION:
-                    result.push(graphQLTypeDefinition(GraphQLEnumType.name, node));
-                    break;
                   case kinds.INTERFACE_TYPE_DEFINITION:
-                    result.push(graphQLTypeDefinition(GraphQLInterfaceType.name, node));
+                    let decorators = getDecorator(node, decorator);
+                    root.push(typeDefinition(KINDS_MAPPING[node.kind], node, decorators));
                     break;
                 }
               }
             });
-            path.parentPath.replaceWithMultiple(t.objectExpression(result));
+            path.parentPath.replaceWithMultiple(t.objectExpression(root));
           }
         }
       }
     }
   };
+}
+
+function getDecorator(node, all) {
+  const typeProps = all ? all.properties.filter(p => {
+    return p.key.name === node.name.value;
+  })[0] : null;
+  return typeProps ? typeProps.value.properties : null;
 }
 

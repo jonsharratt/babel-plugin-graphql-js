@@ -32,6 +32,22 @@ export const SingleInterface =
   }
 }`
 
+export const FieldResolver =
+`{
+  Hello: function () {
+    return new GraphQLObjectType({
+      name: "Hello",
+      fields: () => ({
+        world: {
+          type: GraphQLString,
+          resolve: () => {
+            return "foo";
+          } }
+      })
+    });
+  }
+}`
+
 export const StringType =
 `{
   Hello: function () {
@@ -195,7 +211,9 @@ export const StarWars =
           type: GraphQLString
         },
         friends: {
-          type: new GraphQLList(this.Character())
+          type: new GraphQLList(this.Character()),
+
+          resolve: droid => getFriends(droid)
         },
         appearsIn: {
           type: new GraphQLList(this.Episode())
