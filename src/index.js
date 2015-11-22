@@ -156,7 +156,7 @@ export default function() {
                 }
               }
             });
-            path.parentPath.replaceWithMultiple(t.objectExpression(root));
+            path.replaceWithMultiple(t.objectExpression(root));
           }
         }
       }
