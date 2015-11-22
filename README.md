@@ -1,4 +1,5 @@
 ## GraphQL Schema to GraphQL.js Plugin
+[![Circle CI](https://circleci.com/gh/jonsharratt/babel-graphql-js.svg?style=shield)](https://circleci.com/gh/jonsharratt/babel-graphql-js)
 
 #### Still in active development, not ready for use.
 
