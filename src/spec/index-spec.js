@@ -16,6 +16,12 @@ describe('Schema', () => {
   });
 
   describe('Resolvers', () => {
+    it('Interface', () => {
+      const code = 'graphql`${ `interface Hello { world: String }`}' +
+                           '${ { Hello: { resolveType: () => { return "foo"; } } } }`';
+      expect(transform(code)).to.equal(`${expectations.InterfaceResolver}`);
+    });
+
     it('Field', () => {
       const code = 'graphql`${ `type Hello { world: String }`}' +
                            '${ { Hello: { world: { resolve: () => { return "foo"; } } } } }`';

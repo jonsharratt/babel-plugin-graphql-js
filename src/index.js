@@ -102,7 +102,7 @@ function getName(node) {
 }
 
 function getBody(node, decorators) {
-  const body = [];
+  let body = [];
   body.push(getName(node));
 
   if (node.fields && node.fields.length) {
@@ -117,12 +117,24 @@ function getBody(node, decorators) {
     body.push(getInterfaces(node));
   }
 
+  if (decorators) {
+    const typeDecorators = decorators
+    .filter(d => {
+      return d.value.type !== 'ObjectExpression';
+    }).map(d => {
+      return t.objectProperty(t.identifier(d.key.name), d.value);
+    });
+
+    if (typeDecorators) {
+      body = body.concat(typeDecorators);
+    }
+  }
+
   return [t.objectExpression(body)];
 }
 
 function typeDefinition(graphQLType, node, decorators) {
   const typeName = node.name.value;
-
   return t.objectProperty(t.identifier(typeName),
     t.functionExpression(null, [], t.blockStatement(
       [t.returnStatement(

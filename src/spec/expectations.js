@@ -32,6 +32,23 @@ export const SingleInterface =
   }
 }`;
 
+export const InterfaceResolver =
+`{
+  Hello: function () {
+    return new GraphQLInterfaceType({
+      name: "Hello",
+      fields: () => ({
+        world: {
+          type: GraphQLString
+        }
+      }),
+      resolveType: () => {
+        return "foo";
+      }
+    });
+  }
+}`;
+
 export const FieldResolver =
 `{
   Hello: function () {
@@ -174,7 +191,10 @@ export const StarWars =
         appearsIn: {
           type: new GraphQLList(this.Episode())
         }
-      })
+      }),
+      resolveType: character => {
+        return getHuman(character.id) ? humanType : droidType;
+      }
     });
   },
   Human: function () {

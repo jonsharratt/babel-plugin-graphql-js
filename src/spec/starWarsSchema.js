@@ -27,6 +27,11 @@ type Droid implements Character {
 
 export const fields = `
 {
+  Character: {
+    resolveType: character => {
+      return getHuman(character.id) ? humanType : droidType;
+    }
+  },
   Droid: {
     friends: {
       resolve: droid => getFriends(droid),
