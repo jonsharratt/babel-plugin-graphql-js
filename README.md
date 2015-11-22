@@ -52,7 +52,7 @@ type Droid implements Character {
   Droid: {
     name: {
       resolve: () => { return 'Joe Blogs'; }
-    }
+    },
     description: 'A mechanical creature in the Star Wars universe.'
   }
 }
