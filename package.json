@@ -5,7 +5,7 @@
   "main": "lib",
   "scripts": {
     "test": "mocha --harmony --compilers js:babel-core/register src/spec",
-    "lint": "./node_modules/eslint/bin/eslint.js .",
+    "lint": "./node_modules/eslint/bin/eslint.js src",
     "clean": "rimraf lib",
     "build": "babel src -d lib --ignore src/spec",
     "prepublish": "npm run build"
