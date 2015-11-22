@@ -25,22 +25,26 @@ const KINDS_MAPPING = {
 
 function getType(type) {
   switch(type.kind) {
-    case kinds.NON_NULL_TYPE:
-      return t.newExpression(t.identifier(GraphQLNonNull.name), [getType(type.type)]);
-    case kinds.LIST_TYPE:
-      return t.newExpression(t.identifier(GraphQLList.name), [getType(type.type)]);
-    case kinds.NAMED_TYPE:
-      switch(type.name.value) {
-        case GraphQLString.name:
-        case GraphQLInt.name:
-        case GraphQLFloat.name:
-        case GraphQLBoolean.name:
-        case GraphQLID.name:
-          return t.identifier(`GraphQL${type.name.value}`);
-      }
+  case kinds.NON_NULL_TYPE:
+    return t.newExpression(t.identifier(GraphQLNonNull.name), [getType(type.type)]);
+  case kinds.LIST_TYPE:
+    return t.newExpression(t.identifier(GraphQLList.name), [getType(type.type)]);
+  case kinds.NAMED_TYPE:
+    switch(type.name.value) {
+    case GraphQLString.name:
+    case GraphQLInt.name:
+    case GraphQLFloat.name:
+    case GraphQLBoolean.name:
+    case GraphQLID.name:
+      return t.identifier(`GraphQL${type.name.value}`);
     default:
       return t.callExpression(t.memberExpression(t.thisExpression(),
              t.identifier(type.name.value)), []);
+    }
+    break;
+  default:
+    return t.callExpression(t.memberExpression(t.thisExpression(),
+           t.identifier(type.name.value)), []);
   }
 }
 
@@ -77,7 +81,7 @@ function getFields(node, decorators) {
 
     return t.objectProperty(
       t.identifier(f.name.value),
-      t.objectExpression(fieldProperties))
+      t.objectExpression(fieldProperties));
   });
 
   return t.objectProperty(t.identifier('fields'),
@@ -89,7 +93,7 @@ function getValues(node) {
     return t.objectProperty(t.identifier(v.name.value), t.objectExpression([]));
   });
 
-  return t.objectProperty(t.identifier('values'), t.objectExpression(values))
+  return t.objectProperty(t.identifier('values'), t.objectExpression(values));
 }
 
 function getName(node) {
@@ -113,7 +117,7 @@ function getBody(node, decorators) {
     body.push(getInterfaces(node));
   }
 
-  return [t.objectExpression(body)]
+  return [t.objectExpression(body)];
 }
 
 function typeDefinition(graphQLType, node, decorators) {
@@ -143,12 +147,12 @@ export default function() {
             visit(ast, {
               enter(node) {
                 switch(node.kind) {
-                  case kinds.OBJECT_TYPE_DEFINITION:
-                  case kinds.ENUM_TYPE_DEFINITION:
-                  case kinds.INTERFACE_TYPE_DEFINITION:
-                    let decorators = getDecorator(node, decorator);
-                    root.push(typeDefinition(KINDS_MAPPING[node.kind], node, decorators));
-                    break;
+                case kinds.OBJECT_TYPE_DEFINITION:
+                case kinds.ENUM_TYPE_DEFINITION:
+                case kinds.INTERFACE_TYPE_DEFINITION:
+                  let decorators = getDecorator(node, decorator);
+                  root.push(typeDefinition(KINDS_MAPPING[node.kind], node, decorators));
+                  break;
                 }
               }
             });

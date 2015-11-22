@@ -23,7 +23,7 @@ type Droid implements Character {
   friends: [Character]
   appearsIn: [Episode]
   primaryFunction: String
-}`
+}`;
 
 export const fields = `
 {

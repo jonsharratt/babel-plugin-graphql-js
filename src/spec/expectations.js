@@ -10,7 +10,7 @@ export const NonNullDirective =
       })
     });
   }
-}`
+}`;
 
 export const MultipleInterfaces =
 `{
@@ -20,7 +20,7 @@ export const MultipleInterfaces =
       interfaces: [this.World(), this.Universe()]
     });
   }
-}`
+}`;
 
 export const SingleInterface =
 `{
@@ -30,7 +30,7 @@ export const SingleInterface =
       interfaces: [this.World()]
     });
   }
-}`
+}`;
 
 export const FieldResolver =
 `{
@@ -46,7 +46,7 @@ export const FieldResolver =
       })
     });
   }
-}`
+}`;
 
 export const StringType =
 `{
@@ -60,7 +60,7 @@ export const StringType =
       })
     });
   }
-}`
+}`;
 
 export const IntType =
 `{
@@ -74,7 +74,7 @@ export const IntType =
       })
     });
   }
-}`
+}`;
 
 export const FloatType =
 `{
@@ -88,7 +88,7 @@ export const FloatType =
       })
     });
   }
-}`
+}`;
 
 export const BooleanType =
 `{
@@ -102,7 +102,7 @@ export const BooleanType =
       })
     });
   }
-}`
+}`;
 
 export const IdType =
 `{
@@ -116,7 +116,7 @@ export const IdType =
       })
     });
   }
-}`
+}`;
 
 export const Enum =
 `{
@@ -130,7 +130,7 @@ export const Enum =
       }
     });
   }
-}`
+}`;
 
 export const Lists =
 `{
@@ -144,7 +144,7 @@ export const Lists =
       })
     });
   }
-}`
+}`;
 
 export const StarWars =
 `{
@@ -225,4 +225,4 @@ export const StarWars =
       interfaces: [this.Character()]
     });
   }
-}`
+}`;

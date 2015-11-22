@@ -5,6 +5,7 @@
   "main": "lib",
   "scripts": {
     "test": "mocha --harmony --compilers js:babel-core/register src/spec",
+    "lint": "./node_modules/eslint/bin/eslint.js .",
     "clean": "rimraf lib",
     "build": "babel src -d lib",
     "prepublish": "npm run build"
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "chai": "^3.4.1",
+    "eslint": "^1.10.1",
     "mocha": "^2.3.4"
   }
 }
