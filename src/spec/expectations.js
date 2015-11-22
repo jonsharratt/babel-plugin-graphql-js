@@ -1,248 +1,258 @@
 export const NonNullDirective =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      fields: () => ({
-        world: {
-          type: new GraphQLNonNull(GraphQLString)
-        }
-      })
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: new GraphQLNonNull(GraphQLString)
+      }
+    })
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const MultipleInterfaces =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      interfaces: [this.World(), this.Universe()]
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    interfaces: [World, Universe]
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const SingleInterface =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      interfaces: [this.World()]
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    interfaces: [World]
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const InterfaceResolver =
-`{
-  Hello: function () {
-    return new GraphQLInterfaceType({
-      name: "Hello",
-      fields: () => ({
-        world: {
-          type: GraphQLString
-        }
-      }),
-      resolveType: () => {
-        return "foo";
+`(function () {
+  const Hello = new GraphQLInterfaceType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: GraphQLString
       }
-    });
-  }
-}`;
+    }),
+    resolveType: () => {
+      return "foo";
+    }
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const FieldResolver =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      fields: () => ({
-        world: {
-          type: GraphQLString,
-          resolve: () => {
-            return "foo";
-          } }
-      })
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: GraphQLString,
+        resolve: () => {
+          return "foo";
+        } }
+    })
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const StringType =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      fields: () => ({
-        world: {
-          type: GraphQLString
-        }
-      })
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: GraphQLString
+      }
+    })
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const IntType =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      fields: () => ({
-        world: {
-          type: GraphQLInt
-        }
-      })
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: GraphQLInt
+      }
+    })
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const FloatType =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      fields: () => ({
-        world: {
-          type: GraphQLFloat
-        }
-      })
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: GraphQLFloat
+      }
+    })
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const BooleanType =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      fields: () => ({
-        world: {
-          type: GraphQLBoolean
-        }
-      })
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: GraphQLBoolean
+      }
+    })
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const IdType =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      fields: () => ({
-        world: {
-          type: GraphQLID
-        }
-      })
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: GraphQLID
+      }
+    })
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const Enum =
-`{
-  Hello: function () {
-    return new GraphQLEnumType({
-      name: "Hello",
-      values: {
-        WORLD: {},
-        STAR: {},
-        UNIVERSE: {}
-      }
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLEnumType({
+    name: "Hello",
+    values: {
+      WORLD: {},
+      STAR: {},
+      UNIVERSE: {}
+    }
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const Lists =
-`{
-  Hello: function () {
-    return new GraphQLObjectType({
-      name: "Hello",
-      fields: () => ({
-        world: {
-          type: new GraphQLList(GraphQLString)
-        }
-      })
-    });
-  }
-}`;
+`(function () {
+  const Hello = new GraphQLObjectType({
+    name: "Hello",
+    fields: () => ({
+      world: {
+        type: new GraphQLList(GraphQLString)
+      }
+    })
+  });
+  return {
+    Hello: Hello
+  };
+})()`;
 
 export const StarWars =
-`{
-  Episode: function () {
-    return new GraphQLEnumType({
-      name: "Episode",
-      values: {
-        NEWHOPE: {},
-        EMPIRE: {},
-        JEDI: {}
+`(function () {
+  const Episode = new GraphQLEnumType({
+    name: "Episode",
+    values: {
+      NEWHOPE: {},
+      EMPIRE: {},
+      JEDI: {}
+    }
+  });
+  const Character = new GraphQLInterfaceType({
+    name: "Character",
+    fields: () => ({
+      id: {
+        type: new GraphQLNonNull(GraphQLString)
+      },
+      name: {
+        type: GraphQLString
+      },
+      friends: {
+        type: new GraphQLList(Character)
+      },
+      appearsIn: {
+        type: new GraphQLList(Episode)
       }
-    });
-  },
-  Character: function () {
-    return new GraphQLInterfaceType({
-      name: "Character",
-      fields: () => ({
-        id: {
-          type: new GraphQLNonNull(GraphQLString)
-        },
-        name: {
-          type: GraphQLString
-        },
-        friends: {
-          type: new GraphQLList(this.Character())
-        },
-        appearsIn: {
-          type: new GraphQLList(this.Episode())
-        }
-      }),
-      resolveType: character => {
-        return getHuman(character.id) ? humanType : droidType;
+    }),
+    resolveType: character => {
+      return getHuman(character.id) ? humanType : droidType;
+    }
+  });
+  const Human = new GraphQLObjectType({
+    name: "Human",
+    fields: () => ({
+      id: {
+        type: new GraphQLNonNull(GraphQLString)
+      },
+      name: {
+        type: GraphQLString
+      },
+      friends: {
+        type: new GraphQLList(Character)
+      },
+      appearsIn: {
+        type: new GraphQLList(Episode)
+      },
+      homePlanet: {
+        type: GraphQLString
       }
-    });
-  },
-  Human: function () {
-    return new GraphQLObjectType({
-      name: "Human",
-      fields: () => ({
-        id: {
-          type: new GraphQLNonNull(GraphQLString)
-        },
-        name: {
-          type: GraphQLString
-        },
-        friends: {
-          type: new GraphQLList(this.Character())
-        },
-        appearsIn: {
-          type: new GraphQLList(this.Episode())
-        },
-        homePlanet: {
-          type: GraphQLString
-        }
-      }),
-      interfaces: [this.Character()]
-    });
-  },
-  Droid: function () {
-    return new GraphQLObjectType({
-      name: "Droid",
-      fields: () => ({
-        id: {
-          type: new GraphQLNonNull(GraphQLString)
-        },
-        name: {
-          type: GraphQLString
-        },
-        friends: {
-          type: new GraphQLList(this.Character()),
+    }),
+    interfaces: [Character]
+  });
+  const Droid = new GraphQLObjectType({
+    name: "Droid",
+    fields: () => ({
+      id: {
+        type: new GraphQLNonNull(GraphQLString)
+      },
+      name: {
+        type: GraphQLString
+      },
+      friends: {
+        type: new GraphQLList(Character),
 
-          resolve: droid => getFriends(droid)
-        },
-        appearsIn: {
-          type: new GraphQLList(this.Episode())
-        },
-        primaryFunction: {
-          type: GraphQLString
-        }
-      }),
-      interfaces: [this.Character()]
-    });
-  }
-}`;
+        resolve: droid => getFriends(droid)
+      },
+      appearsIn: {
+        type: new GraphQLList(Episode)
+      },
+      primaryFunction: {
+        type: GraphQLString
+      }
+    }),
+    interfaces: [Character]
+  });
+  return {
+    Episode: Episode,
+    Character: Character,
+    Human: Human,
+    Droid: Droid
+  };
+})()`;
