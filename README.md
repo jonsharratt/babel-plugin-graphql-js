@@ -1,10 +1,6 @@
 ## GraphQL Schema to GraphQL.js Plugin
 [![Circle CI](https://circleci.com/gh/jonsharratt/babel-graphql-js.svg?style=shield)](https://circleci.com/gh/jonsharratt/babel-graphql-js)
 
-#### Still in active development, not ready for use.
-#### Declaring types should all work fine just now as per example.
-#### Queries are still a work in progress.
-
 Babel plugin that uses a tagged template string with two expressions, the first being the string of the GraphQL Schema Language.  The second being a decorator object to apply resolvers, descriptions and deprecations.
 
 ##Tagged Template String
@@ -40,6 +36,12 @@ type Droid implements Character {
   appearsIn: [Episode]
   primaryFunction: String
 }
+
+type Query {
+  hero(episode: Episode): Character
+  human(id: String!): Human
+  droid(id: String!): Droid
+}
 `}${
 {
   Character: {
@@ -50,12 +52,29 @@ type Droid implements Character {
     }
   },
   Droid: {
-    name: {
-      resolve: () => { return 'Joe Blogs'; }
-    },
     description: 'A mechanical creature in the Star Wars universe.'
+    name: {
+      resolve: () => { return 'Buzz Droid'; }
+    }
   }
 }
 }`;
+```
 
+Using [https://github.com/graphql/express-graphql](https://github.com/graphql/express-graphql) you can then easily setup your GraphQL endpoint.
+
+```js
+export var StarWarsSchema = new GraphQLSchema({
+  query: StarWarsTypes.Query
+});
+
+const app = express();
+app.use('/', graphqlHTTP({ schema: StarWarsSchema, graphiql: true }));
+
+const server = app.listen(3000, function () {
+  const host = server.address().address;
+  const port = server.address().port;
+  console.log('Example app listening at http://%s:%s', host, port);
+})
+```
 
