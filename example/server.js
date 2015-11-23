@@ -35,6 +35,13 @@ type Droid implements Character {
   appearsIn: [Episode]
   primaryFunction: String
 }
+
+type Query {
+  hero(episode: Episode): Character
+  human(id: String!): Human
+  droid(id: String!): Droid
+}
+
 `}${
 {
   Character: {
@@ -42,6 +49,9 @@ type Droid implements Character {
     resolveType: () => { return StarWarsSchema.Human; },
     id: {
       description: 'The id of the character.'
+    },
+    name: {
+      description: 'The name of the character.'
     }
   },
   Droid: {
@@ -50,43 +60,9 @@ type Droid implements Character {
 }
 }`;
 
-var queryType = new GraphQLObjectType({
-  name: 'Query',
-  fields: () => ({
-    hero: {
-      type: StarWarsTypes.Character,
-      args: {
-        episode: {
-          description: 'If omitted, returns the hero of the whole saga. If ' +
-                       'provided, returns the hero of that particular episode.',
-          type: StarWarsTypes.Episode
-        }
-      }
-    },
-    human: {
-      type: StarWarsTypes.Human,
-      args: {
-        id: {
-          description: 'id of the human',
-          type: new GraphQLNonNull(GraphQLString)
-        }
-      }
-    },
-    droid: {
-      type: StarWarsTypes.Droid,
-      args: {
-        id: {
-          description: 'id of the droid',
-          type: new GraphQLNonNull(GraphQLString)
-        }
-      }
-    },
-  })
-});
 export var StarWarsSchema = new GraphQLSchema({
-  query: queryType
+  query: StarWarsTypes.Query
 });
-
 
 const app = express();
 app.use('/',
@@ -100,3 +76,4 @@ const server = app.listen(3000, function () {
   const port = server.address().port;
   console.log('Example app listening at http://%s:%s', host, port);
 });
+

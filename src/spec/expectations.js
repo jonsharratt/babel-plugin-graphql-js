@@ -70,6 +70,26 @@ export const FieldResolver =
   };
 })()`;
 
+export const BasicQuery =
+`(function () {
+  const Query = new GraphQLObjectType({
+    name: "Query",
+    fields: () => ({
+      hello: {
+        type: World,
+        args: {
+          id: {
+            type: GraphQLString
+          }
+        }
+      }
+    })
+  });
+  return {
+    Query: Query
+  };
+})()`;
+
 export const StringType =
 `(function () {
   const Hello = new GraphQLObjectType({

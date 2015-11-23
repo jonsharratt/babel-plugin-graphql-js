@@ -64,8 +64,19 @@ function getFieldDecorators(name, decorators) {
   }
 }
 
+function getFieldArgs(args) {
+  const fieldArgs = args.map(arg => {
+    return t.objectProperty(
+      t.identifier(arg.name.value),
+      t.objectExpression([t.objectProperty(t.identifier('type'), getType(arg.type))]));
+  });
+
+  return t.objectProperty(t.identifier('args'), t.objectExpression(fieldArgs));
+}
+
 function getFields(node, decorators) {
   const fields = node.fields.map(f => {
+
     let fieldProperties = [
       t.objectProperty(t.identifier('type'), getType(f.type))
     ];
@@ -74,6 +85,13 @@ function getFields(node, decorators) {
       const fieldDecorators = getFieldDecorators(f.name.value, decorators);
       if (fieldDecorators) {
         fieldProperties = fieldProperties.concat(fieldDecorators);
+      }
+    }
+
+    if (f.arguments && f.arguments.length) {
+      const fieldArgs = getFieldArgs(f.arguments);
+      if (fieldArgs) {
+        fieldProperties = fieldProperties.concat(fieldArgs);
       }
     }
 

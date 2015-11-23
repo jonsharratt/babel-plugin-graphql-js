@@ -15,6 +15,11 @@ describe('Schema', () => {
     expect(transform('graphql`${`' + code + '`}${' + fields +'}`')).to.equal(`${expectations.StarWars}`);
   });
 
+  it('Query', () => {
+    const code = 'graphql`${`type Query { hello(id: String): World }`}`';
+    expect(transform(code)).to.equal(`${expectations.BasicQuery}`);
+  });
+
   describe('Resolvers', () => {
     it('Interface', () => {
       const code = 'graphql`${ `interface Hello { world: String }`}' +
