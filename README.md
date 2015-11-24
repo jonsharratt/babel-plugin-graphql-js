@@ -1,5 +1,5 @@
 ## GraphQL Schema to GraphQL.js Plugin
-[![Circle CI](https://circleci.com/gh/jonsharratt/babel-graphql-js.svg?style=shield)](https://circleci.com/gh/jonsharratt/babel-graphql-js)
+[![Circle CI](https://circleci.com/gh/jonsharratt/babel-plugin-graphql-js/tree/master.svg?style=svg)](https://circleci.com/gh/jonsharratt/babel-plugin-graphql-js/tree/master)
 
 Babel plugin that uses a tagged template string with two expressions, the first being the string of the GraphQL Schema Language.  The second being a decorator object to apply resolvers, descriptions and deprecations.
 
